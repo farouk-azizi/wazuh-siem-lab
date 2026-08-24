@@ -1,0 +1,12 @@
+---
+- name: Install Wazuh manager and Filebeat
+  hosts: all_in_one
+  become: yes
+  become_user: root
+
+  roles:
+    - role: ansible-wazuh-manager
+    - role: ansible-filebeat-oss
+      filebeat_node_name: node-1
+      filebeat_output_indexer_hosts:
+        - "127.0.0.1:9200"
