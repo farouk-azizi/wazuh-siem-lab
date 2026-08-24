@@ -1,0 +1,6 @@
+24/08/2026 15:23:12 INFO: Verbose logging redirected to /home/farouk-azizi/personnal-projects/wazuh-siem-lab/playbooks/indexer/certificates/wazuh-certificates-tool.log
+24/08/2026 15:23:12 INFO: Generating the root certificate.
+24/08/2026 15:23:12 INFO: Generating Admin certificates.
+24/08/2026 15:23:12 INFO: Admin certificates created.
+24/08/2026 15:23:12 INFO: Generating Wazuh indexer certificates.
+24/08/2026 15:23:13 INFO: Wazuh indexer certificates created.

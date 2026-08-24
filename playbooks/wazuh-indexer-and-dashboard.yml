@@ -1,0 +1,36 @@
+---
+# Step 1: Generate certificates (runs locally on the control node, no root needed)
+- name: Generate Wazuh indexer certificates
+  hosts: all_in_one
+  become: no
+  roles:
+    - role: wazuh-indexer
+      perform_installation: false
+  vars:
+    indexer_node_master: true
+    instances:
+      node1:
+        name: node-1
+        ip: 127.0.0.1
+        role: indexer
+  tags:
+    - generate-certs
+
+# Step 2: Install indexer and dashboard
+- name: Install Wazuh indexer and dashboard
+  hosts: all_in_one
+  become: yes
+  become_user: root
+  roles:
+    - role: wazuh-indexer
+    - role: wazuh-dashboard
+  vars:
+    single_node: true
+    indexer_network_host: 127.0.0.1
+    indexer_node_name: node-1
+    ansible_shell_allow_world_readable_temp: true
+    instances:
+      node1:
+        name: node-1
+        ip: 127.0.0.1
+        role: indexer
