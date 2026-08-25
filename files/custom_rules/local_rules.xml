@@ -1,0 +1,100 @@
+<!-- Custom Wazuh Rules for SIEM Lab - MITRE ATT&CK Mapped -->
+<group name="custom,attack_simulation,siem_lab,">
+
+  <!-- Rule 100001: SSH Brute Force Detection -->
+  <rule id="100001" level="10" frequency="6" timeframe="120" ignore="60">
+    <if_matched_sid>5716</if_matched_sid>
+    <same_source_ip />
+    <description>Multiple SSH authentication failures - Possible brute force attack</description>
+    <mitre>
+      <id>T1110</id>
+      <id>T1110.001</id>
+    </mitre>
+    <group>authentication_failures,pci_dss_10.2.4,pci_dss_10.2.5,gdpr_IV_35.7.d,gpg13_7.1,nist_800_53_AU.6,hipaa_164.312.b,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+  <!-- Rule 100002: Privilege Escalation via sudo -->
+  <rule id="100002" level="8">
+    <if_sid>5402</if_sid>
+    <match>sudo -i|sudo su|sudo bash|sudo sh</match>
+    <description>Privilege escalation attempt detected - Interactive shell spawned via sudo</description>
+    <mitre>
+      <id>T1548</id>
+      <id>T1548.003</id>
+    </mitre>
+    <group>privilege_escalation,pci_dss_10.2.5,pci_dss_10.2.2,gdpr_IV_32.2,gpg13_7.6,nist_800_53_AU.6,hipaa_164.312.b,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+  <!-- Rule 100003: Persistence via Crontab Modification -->
+  <rule id="100003" level="7">
+    <if_sid>530</if_sid>
+    <match>crontab|/etc/cron|/var/spool/cron</match>
+    <description>Crontab or cron directory modified - Possible persistence mechanism</description>
+    <mitre>
+      <id>T1053</id>
+      <id>T1053.003</id>
+    </mitre>
+    <group>persistence,pci_dss_10.2.5,pci_dss_10.2.2,gdpr_IV_35.7.d,gpg13_7.1,nist_800_53_AU.6,hipaa_164.312.b,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+  <!-- Rule 100004: Suspicious Network Connection (Reverse Shell) -->
+  <rule id="100004" level="9">
+    <if_sid>5302</if_sid>
+    <match>nc -e|nc -c|/bin/bash -i|/bin/sh -i|python -c 'import socket|python3 -c 'import socket|ruby -rsocket</match>
+    <description>Possible reverse shell or backdoor connection detected</description>
+    <mitre>
+      <id>T1059</id>
+      <id>T1059.004</id>
+      <id>T1071</id>
+    </mitre>
+    <group>command_and_control,pci_dss_10.2.5,pci_dss_10.2.2,gdpr_IV_35.7.d,gpg13_7.1,nist_800_53_AU.6,hipaa_164.312.b,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+  <!-- Rule 100005: New Local User Added -->
+  <rule id="100005" level="6">
+    <if_sid>5902</if_sid>
+    <match>useradd|adduser</match>
+    <description>New local user account created - Possible persistence</description>
+    <mitre>
+      <id>T1136</id>
+      <id>T1136.001</id>
+    </mitre>
+    <group>persistence,pci_dss_10.2.5,pci_dss_10.2.2,gdpr_IV_32.2,gpg13_7.10,nist_800_53_AU.6,hipaa_164.312.b,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+  <!-- Rule 100006: File Integrity - Critical System Files -->
+  <rule id="100006" level="8">
+    <if_sid>550</if_sid>
+    <match>/etc/passwd|/etc/shadow|/etc/sudoers|/etc/group</match>
+    <description>Critical system file modified - Possible unauthorized access or privilege escalation</description>
+    <mitre>
+      <id>T1098</id>
+      <id>T1548</id>
+    </mitre>
+    <group>file_integrity,pci_dss_10.5.5,pci_dss_11.4,gdpr_IV_35.7.d,gpg13_4.13,nist_800_53_AU.9,hipaa_164.312.c.1,hipaa_164.312.c.2,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+  <!-- Rule 100007: Multiple Failed Logins (Generic) -->
+  <rule id="100007" level="7" frequency="5" timeframe="60" ignore="30">
+    <if_matched_sid>5716</if_matched_sid>
+    <same_source_ip />
+    <description>Multiple failed login attempts detected</description>
+    <mitre>
+      <id>T1110</id>
+    </mitre>
+    <group>authentication_failures,pci_dss_10.2.4,pci_dss_10.2.5,gdpr_IV_35.7.d,gpg13_7.1,nist_800_53_AU.6,hipaa_164.312.b,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+  <!-- Rule 100008: Suspicious Process Execution (Mimikatz-like) -->
+  <rule id="100008" level="10">
+    <if_sid>5302</if_sid>
+    <match>mimikatz|sekurlsa|lsadump|procdump|gsecdump</match>
+    <description>Credential dumping tool execution detected</description>
+    <mitre>
+      <id>T1003</id>
+      <id>T1003.001</id>
+    </mitre>
+    <group>credential_access,pci_dss_10.2.5,pci_dss_10.2.2,gdpr_IV_32.2,gpg13_7.6,nist_800_53_AU.6,hipaa_164.312.b,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+</group>

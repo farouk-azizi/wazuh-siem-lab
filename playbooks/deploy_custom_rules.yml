@@ -1,0 +1,30 @@
+---
+- name: Deploy custom Wazuh detection rules
+  hosts: all_in_one
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: Ensure custom rules directory exists
+      file:
+        path: /var/ossec/etc/rules
+        state: directory
+        owner: wazuh
+        group: wazuh
+        mode: '0750'
+
+    - name: Deploy custom detection rules
+      copy:
+        src: "{{ playbook_dir }}/../files/custom_rules/local_rules.xml"
+        dest: /var/ossec/etc/rules/local_rules.xml
+        owner: wazuh
+        group: wazuh
+        mode: '0640'
+      notify: restart wazuh-manager
+
+  handlers:
+    - name: restart wazuh-manager
+      systemd:
+        name: wazuh-manager
+        state: restarted
+        enabled: yes
