@@ -24,5 +24,3 @@ ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no "$TARGET_USER@$TARGET_IP" '
 '
 
 echo "[+] Done. Check Wazuh dashboard: rule.id:100003"
-EOF
-chmod +x scripts/attacks/persistence_cron.sh

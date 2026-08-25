@@ -1,4 +1,3 @@
-cat > scripts/attacks/privilege_escalation.sh << 'EOF'
 #!/bin/bash
 # Attack: Privilege Escalation via sudo
 # MITRE: T1548.003
@@ -22,5 +21,3 @@ ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no "$TARGET_USER@$TARGET_IP" '
 '
 
 echo "[+] Done. Check Wazuh dashboard: rule.id:100002"
-EOF
-chmod +x scripts/attacks/privilege_escalation.sh

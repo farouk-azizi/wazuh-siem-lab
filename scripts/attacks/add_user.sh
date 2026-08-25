@@ -1,4 +1,3 @@
-cat > scripts/attacks/add_user.sh << 'EOF'
 #!/bin/bash
 # Attack: Create Local Account
 # MITRE: T1136.001
@@ -27,5 +26,3 @@ ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no "$TARGET_USER@$TARGET_IP" "
 "
 
 echo "[+] Done. Check Wazuh dashboard: rule.id:100005"
-EOF
-chmod +x scripts/attacks/add_user.sh

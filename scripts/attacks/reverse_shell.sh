@@ -1,4 +1,3 @@
-cat > scripts/attacks/reverse_shell.sh << 'EOF'
 #!/bin/bash
 # Attack: Reverse Shell Simulation
 # MITRE: T1059.004
@@ -20,5 +19,3 @@ ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no "$TARGET_USER@$TARGET_IP" '
 '
 
 echo "[+] Done. Check Wazuh dashboard: rule.id:100004"
-EOF
-chmod +x scripts/attacks/reverse_shell.sh

